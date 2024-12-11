@@ -1,10 +1,10 @@
 # Nexus-with-Docker-Proxy
 
-```sudo apt update && sudo apt install curl wget && sudo apt install dos2unix```
+``sudo apt update && sudo apt install curl wget && sudo apt install dos2unix``
 
-```wget -O nexus_setup.sh https://raw.githubusercontent.com/R1ghTsS/Nexus-with-Docker-Proxy/main/nexus_setup.sh```
+``wget -O nexus_setup.sh https://raw.githubusercontent.com/R1ghTsS/Nexus-with-Docker-Proxy/main/nexus_setup.sh``
 
-```nano nexus_setup.sh```
+``nano nexus_setup.sh``
 
 	edit Prover ID with yours on this part
 		# Set up Nexus Prover ID
