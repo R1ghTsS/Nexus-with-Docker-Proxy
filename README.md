@@ -11,9 +11,9 @@ nano nexus_setup.sh
 		RUN mkdir -p /root/.nexus && echo "PROVER ID (do not remove qoutes)" > /root/.nexus/prover-id
 To Exit CTRL + X + Y + Enter
 
-	chmod +x nexus_setup.sh \\
+	chmod +x nexus_setup.sh
 
-	dos2unix nexus_setup.sh\\
+	dos2unix nexus_setup.sh
 
 	./nexus_setup.sh
 
