@@ -6,8 +6,6 @@ wget -O nexus_setup.sh https://raw.githubusercontent.com/R1ghTsS/Nexus-with-Dock
 
 nano nexus_setup.sh
 
-nexus_setup.sh
-
 	edit Prover ID
 		# Set up Nexus Prover ID
 		RUN mkdir -p /root/.nexus && echo "PROVER ID (do not remove qoutes)" > /root/.nexus/prover-id
