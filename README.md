@@ -9,7 +9,7 @@ nano nexus_setup.sh
 	edit Prover ID with yours on this part
 		# Set up Nexus Prover ID
 		RUN mkdir -p /root/.nexus && echo "PROVER ID (do not remove qoutes)" > /root/.nexus/prover-id
-To Exit CTRL + P + Q
+To Exit CTRL + X + Y + Enter
 
 chmod +x nexus_setup.sh
 
