@@ -1,6 +1,7 @@
 # Nexus-with-Docker-Proxy
 
 	git clone https://github.com/R1ghTsS/Nexus-with-Docker-Proxy.git && cd Nexus-with-Docker-Proxy
+ 
  	./nexus_setup.sh
 
 NOTE: If working (mining) fine, ctrl P + Q to exit
