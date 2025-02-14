@@ -12,7 +12,6 @@ echo "Packages installed successfully."
 if [ -d "nexus-docker" ]; then
   echo "Directory nexus-docker already exists."
 else
-  # Create the directory
   mkdir nexus-docker
   echo "Directory nexus-docker created."
 fi
@@ -20,29 +19,36 @@ fi
 # Navigate into the directory
 cd nexus-docker
 
-# Ask if the user wants to use a proxy
-read -p "Do you want to use a proxy? (Y/N): " use_proxy
+# Ask for Prover ID
+read -p "Enter your Prover ID: " prover_id
 
-# Initialize proxy settings
-proxy_type=""
-proxy_ip=""
-proxy_port=""
-proxy_username=""
-proxy_password=""
+# Simplified proxy input: enter proxy in format <type>://[username:password@]ip:port (leave empty if not using a proxy)
+read -p "Enter proxy (format: <type>://[username:password@]ip:port) or leave empty if not using a proxy: " proxy_input
 
-if [[ "$use_proxy" == "Y" || "$use_proxy" == "y" ]]; then
-    # Prompt for proxy type, IP, and credentials
-    read -p "Enter proxy type (http/socks5): " proxy_type
-    read -p "Enter proxy IP: " proxy_ip
-    read -p "Enter proxy port: " proxy_port
-    read -p "Enter proxy username (leave empty if not required): " proxy_username
-    read -p "Enter proxy password (leave empty if not required): " proxy_password
-    echo
-
-    # Adjust proxy type to http-connect if http is chosen
+if [[ -n "$proxy_input" ]]; then
+    use_proxy="Y"
+    # Extract proxy type
+    proxy_type=$(echo "$proxy_input" | cut -d ':' -f1)
+    remainder="${proxy_input#*://}"
+    # Check if credentials are provided
+    if [[ "$remainder" == *"@"* ]]; then
+        creds="${remainder%@*}"
+        proxy_ip_port="${remainder#*@}"
+        proxy_username="${creds%%:*}"
+        proxy_password="${creds#*:}"
+    else
+        proxy_ip_port="$remainder"
+        proxy_username=""
+        proxy_password=""
+    fi
+    proxy_ip="${proxy_ip_port%%:*}"
+    proxy_port="${proxy_ip_port#*:}"
+    # Adjust proxy type if http is chosen
     if [[ "$proxy_type" == "http" ]]; then
         proxy_type="http-connect"
     fi
+else
+    use_proxy="N"
 fi
 
 # Create or replace the Dockerfile with the specified content and proxy settings
@@ -52,46 +58,45 @@ FROM ubuntu:latest
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and upgrade the system
-RUN apt-get update && apt-get install -y \
-    curl \
-    redsocks \
-    iptables \
-    iproute2 \
-    jq \
-    nano \
-    git \
-    build-essential \
-    wget \
-    lz4 \
-    make \
-    gcc \
-    automake \
-    autoconf \
-    tmux \
-    htop \
-    nvme-cli \
-    pkg-config \
-    libssl-dev \
-    libleveldb-dev \
-    tar \
-    clang \
-    bsdmainutils \
-    ncdu \
-    unzip \
-    ca-certificates \
+RUN apt-get update && apt-get install -y \\
+    curl \\
+    redsocks \\
+    iptables \\
+    iproute2 \\
+    jq \\
+    nano \\
+    git \\
+    build-essential \\
+    wget \\
+    lz4 \\
+    make \\
+    gcc \\
+    automake \\
+    autoconf \\
+    tmux \\
+    htop \\
+    nvme-cli \\
+    pkg-config \\
+    libssl-dev \\
+    libleveldb-dev \\
+    tar \\
+    clang \\
+    bsdmainutils \\
+    ncdu \\
+    unzip \\
+    ca-certificates \\
     protobuf-compiler
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:\${PATH}"
 
-# Set up Nexus Prover ID
-RUN mkdir -p /root/.nexus && echo "PROVER ID (do not remove qoutes)" > /root/.nexus/prover-id
-
+# Set up Nexus Prover ID using the user provided value
+RUN mkdir -p /root/.nexus && echo "$prover_id" > /root/.nexus/prover-id
 EOL
 
 # Only add redsocks configuration and entrypoint if proxy is used
-if [[ "$use_proxy" == "Y" || "$use_proxy" == "y" ]]; then
+if [[ "$use_proxy" == "Y" ]]; then
     cat <<EOL >> Dockerfile
 # Copy the redsocks configuration
 COPY redsocks.conf /etc/redsocks.conf
@@ -109,8 +114,8 @@ cat <<EOL >> Dockerfile
 CMD ["bash", "-c", "curl -k https://cli.nexus.xyz/ | sh && nexus run; exec /bin/bash"]
 EOL
 
-# Create the redsocks configuration file only if proxy is used
-if [[ "$use_proxy" == "Y" || "$use_proxy" == "y" ]]; then
+# Create the redsocks configuration file and entrypoint script only if proxy is used
+if [[ "$use_proxy" == "Y" ]]; then
     cat <<EOL > redsocks.conf
 base {
     log_debug = off;
@@ -146,7 +151,7 @@ EOL
 EOL
 
     # Create the entrypoint script
-    cat <<EOL > entrypoint.sh
+    cat <<'EOL' > entrypoint.sh
 #!/bin/sh
 
 echo "Starting redsocks..."
@@ -164,7 +169,7 @@ echo "Iptables configured."
 
 # Execute the user's command
 echo "Executing user command..."
-exec "\$@"
+exec "$@"
 EOL
 fi
 
@@ -190,7 +195,7 @@ docker build -t $container_name .
 
 # Display the completion message
 echo -e "\e[32mSetup is complete. To run the Docker container, use the following command:\e[0m"
-if [[ "$use_proxy" == "Y" || "$use_proxy" == "y" ]]; then
+if [[ "$use_proxy" == "Y" ]]; then
     echo "docker run -it --cap-add=NET_ADMIN --name $container_name -v $data_dir:/root/.nexus $container_name"
 else
     echo "docker run -it --name $container_name -v $data_dir:/root/.nexus $container_name"
