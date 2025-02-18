@@ -2,7 +2,7 @@
 
 # Install necessary packages
 echo "Installing necessary packages..."
-sudo apt update && sudo apt upgrade -y
+sudo apt update
 sudo apt install -y protobuf-compiler docker.io jq curl iptables build-essential git wget lz4 make gcc nano automake autoconf tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip
 sudo systemctl start docker
 sudo systemctl enable docker
