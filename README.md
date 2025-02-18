@@ -1,4 +1,4 @@
-# Nexus-with-Docker-Proxy
+# Nexus-with-Docker-Multiple-Instance
 
 	git clone https://github.com/R1ghTsS/Nexus-with-Docker-Proxy.git && cd Nexus-with-Docker-Proxy && chmod +x nexus_setup.sh && ./nexus_setup.sh
 
