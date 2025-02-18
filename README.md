@@ -1,8 +1,6 @@
 # Nexus-with-Docker-Multiple-Instance
+	sudo apt-get update && sudo apt-get install dos2unix
 # REMOVED PROXY INJECTION - Safe to run without proxy
-	sudo apt-get update && sudo apt-get install dos2unix //
-
-
 	git clone https://github.com/R1ghTsS/Nexus-with-Docker-Proxy.git && cd Nexus-with-Docker-Proxy
 
 Install nexus_setup
