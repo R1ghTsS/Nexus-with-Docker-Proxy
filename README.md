@@ -11,6 +11,12 @@ Install nexus_setup
 
 NOTE: If working (mining) fine, ctrl P + Q to exit
 
+edit
+	cd nexus-data/nexus-docker-1
+ 	nano prover-id
+restart docker
+	
+
 To run the 2nd instance, 3rd instance ...
 
 	./nexus_setup.sh
