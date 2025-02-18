@@ -5,7 +5,7 @@
 
 Install nexus_setup
 
-	chmod +x nexus_setup.sh && ./nexus_setup.sh
+	dos2unix nexus_setup.sh && ./nexus_setup.sh
 
 NOTE: If working (mining) fine, ctrl P + Q to exit
 
